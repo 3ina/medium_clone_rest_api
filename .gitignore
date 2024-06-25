@@ -2,6 +2,11 @@
 __pycache__/
 *.py[cod]
 *$py.class
+.coverage*
+.DS_Store
+staticfiles
+.envs/*
+!envs/.local/
 
 # C extensions
 *.so
