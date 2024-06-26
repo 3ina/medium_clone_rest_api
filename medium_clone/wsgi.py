@@ -11,6 +11,8 @@ import os
 
 from django.core.wsgi import get_wsgi_application
 
-os.environ.setdefault("DJANGO_SETTINGS_MODULE", "medium_clone.settings")
+# TODO :change in production
+
+os.environ.setdefault("DJANGO_SETTINGS_MODULE", "medium_clone.settings.local")
 
 application = get_wsgi_application()
