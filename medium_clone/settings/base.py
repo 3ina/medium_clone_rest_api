@@ -20,10 +20,7 @@ ROOT_DIR = Path(__file__).resolve().parent.parent.parent
 
 APP_DIR = ROOT_DIR / "core_apps"
 
-
-DEBUG = env.bool('DJANGO_DEBUG',False)
-
-
+DEBUG = env.bool('DJANGO_DEBUG', False)
 
 # Application definition
 
@@ -46,7 +43,6 @@ THIRD_PARTY_APPS = [
     "corsheaders",
 ]
 
-
 LOCAL_APPS = [
     "core_apps.common",
     "core_apps.users",
@@ -55,7 +51,6 @@ LOCAL_APPS = [
 ]
 
 INSTALLED_APPS = DJANGO_APPS + THIRD_PARTY_APPS + LOCAL_APPS
-
 
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
@@ -88,20 +83,19 @@ TEMPLATES = [
 
 WSGI_APPLICATION = "medium_clone.wsgi.application"
 
-
 # Database
 # https://docs.djangoproject.com/en/4.1/ref/settings/#databases
 
-DATABASES = {
-    "default": {
-        "ENGINE": "django.db.backends.sqlite3",
-        "NAME": "mydatabase",
-    }
-}
-
 # DATABASES = {
-#     "default" : env.db("DATABASE_URL")
+#     "default": {
+#         "ENGINE": "django.db.backends.sqlite3",
+#         "NAME": "mydatabase",
+#     }
 # }
+
+DATABASES = {
+    "default" : env.db("DATABASE_URL")
+}
 
 PASSWORD_HASHERS = [
     "django.contrib.auth.hashers.PBKDF2PasswordHasher",
@@ -129,7 +123,6 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
-
 # Internationalization
 # https://docs.djangoproject.com/en/4.1/topics/i18n/
 
@@ -149,10 +142,10 @@ ADMIN_URL = "secretpanelnothere/"
 # https://docs.djangoproject.com/en/4.1/howto/static-files/
 
 STATIC_URL = "/staticfiles/"
-STATIC_ROOT = str(ROOT_DIR/"staticfiles")
+STATIC_ROOT = str(ROOT_DIR / "staticfiles")
 
 MEDIA_URL = "/mediafiles/"
-MEDIA_ROOT = str(ROOT_DIR/"mediafiles")
+MEDIA_ROOT = str(ROOT_DIR / "mediafiles")
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.1/ref/settings/#default-auto-field
@@ -160,3 +153,26 @@ MEDIA_ROOT = str(ROOT_DIR/"mediafiles")
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
 CORS_URLS_REGEX = r"^api/.*$"
+
+LOGGING = {
+    "version": 1,
+    "disable_existing_loggers": False,
+    "formatters": {
+        "verbose": {
+            "format": "%(levelname)s %(name)-12s %(asctime)s %(module)s"
+                      "%(process)d %(thread)d %(message)s",
+        }
+    },
+    "handlers" : {
+        "console" : {
+            "level": "DEBUG",
+            "class": "logging.StreamHandler",
+            "formatter": "verbose",
+        }
+    },
+    "root":{
+        "level": "INFO",
+        "handlers": ["console"],
+
+    }
+}
