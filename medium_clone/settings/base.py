@@ -93,9 +93,7 @@ WSGI_APPLICATION = "medium_clone.wsgi.application"
 #     }
 # }
 
-DATABASES = {
-    "default" : env.db("DATABASE_URL")
-}
+
 
 PASSWORD_HASHERS = [
     "django.contrib.auth.hashers.PBKDF2PasswordHasher",
