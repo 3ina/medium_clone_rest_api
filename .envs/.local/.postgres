@@ -3,3 +3,4 @@ POSTGRES_PORT=5432
 POSTGRES_DB=medium_clone
 POSTGRES_USER=root
 POSTGRES_PASSWORD=password
+DATABASE_URL=postgres://root:password@postgres:5432/medium_clone
