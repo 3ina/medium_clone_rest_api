@@ -174,3 +174,4 @@ cython_debug/
 /.idea/vcs.xml
 /.idea/.gitignore
 /core_apps/users/migrations/
+/core_apps/profiles/migrations/0001_initial.py
