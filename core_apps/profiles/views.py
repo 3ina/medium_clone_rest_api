@@ -24,13 +24,13 @@ class ProfileListAPIView(generics.ListAPIView):
     queryset = Profile.objects.all()
     serializer_class = ProfileSerializer
     pagination_class = ProfilePagination
-    renderer_classes = (ProfilesJSONRenderer,)
+    renderer_classes = [ProfilesJSONRenderer]
 
 
 class ProfileDetailAPIView(generics.RetrieveAPIView):
-    permission_classes = (IsAuthenticated,)
+    permission_classes = [IsAuthenticated]
     serializer_class = ProfileSerializer
-    renderer_classes = (ProfileJSONRenderer,)
+    renderer_classes = [ProfileJSONRenderer]
 
     def get_queryset(self):
         queryset = Profile.objects.select_related('user')
@@ -40,3 +40,21 @@ class ProfileDetailAPIView(generics.RetrieveAPIView):
         user = self.request.user
         profile = self.get_queryset().get(user=user)
         return profile
+
+
+class ProfileUpdateAPIView(generics.RetrieveAPIView):
+    serializer_class = UpdateProfileSerializer
+    permission_classes = [IsAuthenticated]
+    parser_classes = [MultiPartParser]
+    renderer_classes = [ProfileJSONRenderer]
+
+    def get_object(self):
+        profile = self.request.user.profile
+        return profile
+
+    def patch(self, request, *args, **kwargs):
+        instance = self.get_object()
+        serializer = self.get_serializer(instance, data=request.data, partial=True)
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
+        return Response(serializer.data, status=status.HTTP_200_OK)
