@@ -36,3 +36,19 @@ class ProfileSerializer(serializers.ModelSerializer):
 
     def get_profile_photo(self, obj):
         return obj.profile_photo.url
+
+
+class UpdateProfileSerializer(serializers.ModelSerializer):
+    country = CountryField(name_only=True)
+
+    class Meta:
+        model = Profile
+        fields = [
+            "phone_number",
+            "profile_photo",
+            "about_me",
+            "gender",
+            "country",
+            "city",
+            "twitter_handle",
+        ]
