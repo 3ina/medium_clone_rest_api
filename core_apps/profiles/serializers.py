@@ -52,3 +52,18 @@ class UpdateProfileSerializer(serializers.ModelSerializer):
             "city",
             "twitter_handle",
         ]
+
+
+class FollowingSerializer(serializers.ModelSerializer):
+    first_name = serializers.CharField(source="user.first_name")
+    last_name = serializers.CharField(source="user.last_name")
+
+    class Meta:
+        model = Profile
+        fields = [
+            "first_name",
+            "last_name",
+            "profile_photo",
+            "about_me",
+            "twitter_handle",
+        ]
