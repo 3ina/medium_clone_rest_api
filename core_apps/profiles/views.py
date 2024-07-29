@@ -78,3 +78,20 @@ class FollowerListView(APIView):
             return Response(formatted_response, status=status.HTTP_200_OK)
         except Profile.DoesNotExist:
             return Response(status=status.HTTP_404_NOT_FOUND)
+
+
+class FollowingListView(APIView):
+    def get(self, request, user_id, format=None):
+        try:
+            profile = Profile.objects.get(user__id=user_id)
+            following_profiles = profile.following.all()
+            users = [p.user for p in following_profiles]
+            serializer = FollowingSerializer(users, many=True)
+            formatted_response = {
+                "status_code": status.HTTP_200_OK,
+                "following_count": following_profiles.count(),
+                "users_i_follow": serializer.data,
+            }
+            return Response(formatted_response, status=status.HTTP_200_OK)
+        except Profile.DoesNotExist:
+            return Response(status=404)
