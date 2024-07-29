@@ -1,4 +1,5 @@
 # TODO: change this in production
+from django.http import HttpRequest
 
 from medium_clone.settings.local import DEFAULT_FROM_EMAIL
 from django.contrib.auth import get_user_model
@@ -58,3 +59,22 @@ class ProfileUpdateAPIView(generics.RetrieveAPIView):
         serializer.is_valid(raise_exception=True)
         serializer.save()
         return Response(serializer.data, status=status.HTTP_200_OK)
+
+
+class FollowerListView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request: HttpRequest, format=None):
+        try:
+            profile = Profile.objects.get(user__id=request.user.id)
+            follower_profiles = profile.followers.all()
+            serializer = FollowingSerializer(follower_profiles, many=True)
+            formatted_response = {
+                "status_code": status.HTTP_200_OK,
+                "followers_count": follower_profiles.count(),
+                "followers": serializer.data
+            }
+
+            return Response(formatted_response, status=status.HTTP_200_OK)
+        except Profile.DoesNotExist:
+            return Response(status=status.HTTP_404_NOT_FOUND)
