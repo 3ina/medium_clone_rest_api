@@ -139,3 +139,35 @@ class FollowAPIView(APIView):
                 {"error": str(e)},
                 status=status.HTTP_400_BAD_REQUEST
             )
+
+
+class UnfollowAPIView(APIView):
+    def post(self, request, user_id, *args, **kwargs):
+        user_profile = request.user.profile
+        try:
+            profile = Profile.objects.get(user__id=user_id)
+
+            if not user_profile.check_following(profile):
+                return Response(
+                    {
+                        "status_code": status.HTTP_400_BAD_REQUEST,
+                        "message": f"You are not following {profile.user.first_name} {profile.user.last_name}.",
+                    },
+                    status=status.HTTP_400_BAD_REQUEST
+                )
+
+            user_profile.unfollow(profile)
+            return Response(
+                {
+                    "status_code": status.HTTP_200_OK,
+                    "message": f"You have unfollowed {profile.user.first_name} {profile.user.last_name}.",
+                },
+                status=status.HTTP_200_OK
+            )
+        except Profile.DoesNotExist:
+            return Response(
+                {
+                    "error": "Profile not found.",
+                },
+                status=status.HTTP_404_NOT_FOUND
+            )
