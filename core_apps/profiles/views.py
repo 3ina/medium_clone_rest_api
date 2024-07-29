@@ -95,3 +95,47 @@ class FollowingListView(APIView):
             return Response(formatted_response, status=status.HTTP_200_OK)
         except Profile.DoesNotExist:
             return Response(status=404)
+
+
+class FollowAPIView(APIView):
+    def post(self, request, user_id, format=None):
+        try:
+            follower = Profile.objects.get(user=self.request.user)
+            profile = Profile.objects.get(user__id=user_id)
+
+            if profile == follower:
+                raise CantFollowYourself("You cannot follow yourself.")
+
+            if follower.check_following(profile):
+                return Response(
+                    {
+                        "status_code": status.HTTP_400_BAD_REQUEST,
+                        "message": f"You are already following {profile.user.first_name} {profile.user.last_name}.",
+                    },
+                    status=status.HTTP_400_BAD_REQUEST
+                )
+
+            follower.follow(profile)
+            subject = "A new user follows you"
+            message = f"Hi {profile.user.first_name}, {follower.user.first_name} {follower.user.last_name} now follows you."
+            from_email = DEFAULT_FROM_EMAIL
+            recipient_list = [profile.user.email]
+            send_mail(subject, message, from_email, recipient_list, fail_silently=True)
+
+            return Response(
+                {
+                    "status_code": status.HTTP_200_OK,
+                    "message": f"You are now following {profile.user.first_name} {profile.user.last_name}.",
+                },
+                status=status.HTTP_200_OK
+            )
+        except Profile.DoesNotExist:
+            return Response(
+                {"error": "Profile not found."},
+                status=status.HTTP_404_NOT_FOUND
+            )
+        except CantFollowYourself as e:
+            return Response(
+                {"error": str(e)},
+                status=status.HTTP_400_BAD_REQUEST
+            )
