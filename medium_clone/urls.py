@@ -21,6 +21,7 @@ schema_view = get_schema_view(
 
 urlpatterns = [
     path("redoc/", schema_view.with_ui("redoc", cache_timeout=0)),
+    path('swagger/', schema_view.with_ui('swagger', cache_timeout=0), name='schema-swagger-ui'),
     path(settings.ADMIN_URL, admin.site.urls),
     path("api/v1/auth/user/",
          CustomUserDetailView.as_view(),
@@ -30,7 +31,8 @@ urlpatterns = [
     path("api/v1/auth/password/reset/confirm/<uidb64>/<token>/",
          PasswordResetConfirmView.as_view(),
          name="password_reset_confirm",
-         )
+         ),
+    path("api/v1/profiles/", include("core_apps.profiles.urls"))
 
 ]
 
