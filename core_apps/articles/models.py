@@ -34,6 +34,8 @@ class Article(TimeStampedModel):
     )
     tags = TaggableManager()
 
+    claps = models.ManyToManyField(User, through=Clap, related_name="clapped_articles")
+
     def __str__(self):
         return f"{self.author.first_name}'s article"
 
