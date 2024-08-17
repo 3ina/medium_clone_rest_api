@@ -20,3 +20,25 @@ class ResponseListCreateView(generics.ListCreateAPIView):
         article_id = self.kwargs.get("article_id")
         article = get_object_or_404(Article, id=article_id)
         serializer.save(user=user, article=article)
+
+
+class ResponseUpdateDeleteView(generics.RetrieveUpdateDestroyAPIView):
+    queryset = Response.objects.all()
+    serializer_class = ResponseSerializer
+    lookup_field = "id"
+
+    def perform_update(self, serializer):
+        user = self.request.user
+        response = self.get_object()
+        if user != response.user:
+            raise PermissionDenied("You do not have permission to edit this response.")
+        serializer.save()
+
+    def perform_destroy(self, instance):
+        user = self.request.user
+        response = self.get_object()
+        if user != response.user:
+            raise PermissionDenied(
+                "You do not have permission to delete this response."
+            )
+        instance.delete()
